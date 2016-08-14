@@ -2,7 +2,7 @@
 title: "Reproducible Research: Peer Assessment 1"
 output: 
   html_document:
-self_contained: no
+    keep_md: true
 ---
 
 
@@ -64,11 +64,11 @@ length( subset( na.rows, na.rows == TRUE ))
 ```
 
 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
-3. Create
+
 My imputation strategy fills in missing values by using the mean number of steps taken per interval. It scans the dataset for a mission value and utilizes an algoritm to lookup the interval in interval.steps dataset. 
 
 
- a new dataset that is equal to the original dataset but with the missing data filled in.
+3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
 ```{r filling_na_rows}
 ## Converts interval into look-up index to avoid a for loop to scan intervalSteps for interval mean
@@ -114,7 +114,7 @@ data.filled$week.part <- revalue( data.filled$week.part, c( "FALSE" = "weekday",
 ```
 
 2. Make a panel plot containing a time series plot (i.e. 𝚝𝚢𝚙𝚎 = "𝚕") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
-```{r plot by week_part}
+```{r}
 week.part <- ddply( data.filled, c("interval", "week.part"), summarize, steps = mean( steps, na.rm = T ))
 ts <- qplot(interval, steps, data = week.part) + geom_line()
 ts + facet_grid(week.part ~ .)

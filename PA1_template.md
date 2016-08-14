@@ -48,18 +48,19 @@ library( ggplot2 )
 ```r
 unzip( "activity.zip" )
 data <- read.csv( "activity.csv", header = T )
+data$date <- as.Date( data$date, "%Y-%m-%d" )
 summary( data )
 ```
 
 ```
-##      steps                date          interval     
-##  Min.   :  0.00   2012-10-01:  288   Min.   :   0.0  
-##  1st Qu.:  0.00   2012-10-02:  288   1st Qu.: 588.8  
-##  Median :  0.00   2012-10-03:  288   Median :1177.5  
-##  Mean   : 37.38   2012-10-04:  288   Mean   :1177.5  
-##  3rd Qu.: 12.00   2012-10-05:  288   3rd Qu.:1766.2  
-##  Max.   :806.00   2012-10-06:  288   Max.   :2355.0  
-##  NA's   :2304     (Other)   :15840
+##      steps             date               interval     
+##  Min.   :  0.00   Min.   :2012-10-01   Min.   :   0.0  
+##  1st Qu.:  0.00   1st Qu.:2012-10-16   1st Qu.: 588.8  
+##  Median :  0.00   Median :2012-10-31   Median :1177.5  
+##  Mean   : 37.38   Mean   :2012-10-31   Mean   :1177.5  
+##  3rd Qu.: 12.00   3rd Qu.:2012-11-15   3rd Qu.:1766.2  
+##  Max.   :806.00   Max.   :2012-11-30   Max.   :2355.0  
+##  NA's   :2304
 ```
 
 
@@ -136,6 +137,10 @@ length( subset( na.rows, na.rows == TRUE ))
 ```
 
 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
+
+My imputation strategy fills in missing values by using the mean number of steps taken per interval. It scans the dataset for a mission value and utilizes an algoritm to lookup the interval in interval.steps dataset. 
+
+
 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
 
@@ -189,3 +194,21 @@ Estimating missing values pulls the mean and median values to the right. With mi
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+For this part the 𝚠𝚎𝚎𝚔𝚍𝚊𝚢𝚜() function may be of some help here. Use the dataset with the filled-in missing values for this part.
+
+1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+
+```r
+data.filled$week.part <- as.factor( weekdays( data.filled$date, abbr = T ) %in% c("Sat", "Sun"))
+data.filled$week.part <- revalue( data.filled$week.part, c( "FALSE" = "weekday", "TRUE" = "weekend" ))
+```
+
+2. Make a panel plot containing a time series plot (i.e. 𝚝𝚢𝚙𝚎 = "𝚕") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
+
+```r
+week.part <- ddply( data.filled, c("interval", "week.part"), summarize, steps = mean( steps, na.rm = T ))
+ts <- qplot(interval, steps, data = week.part) + geom_line()
+ts + facet_grid(week.part ~ .)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-1-1.png) 
