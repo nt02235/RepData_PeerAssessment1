@@ -64,7 +64,11 @@ length( subset( na.rows, na.rows == TRUE ))
 ```
 
 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
-3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
+3. Create
+My imputation strategy fills in missing values by using the mean number of steps taken per interval. It scans the dataset for a mission value and utilizes an algoritm to lookup the interval in interval.steps dataset. 
+
+
+ a new dataset that is equal to the original dataset but with the missing data filled in.
 
 ```{r filling_na_rows}
 ## Converts interval into look-up index to avoid a for loop to scan intervalSteps for interval mean
